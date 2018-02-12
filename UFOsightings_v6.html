@@ -41,6 +41,7 @@
             
         </div>
     </div>
+    <div></div>
     <div id="pagingdiv"><h4>Other Pages: </h4> 
         <ul class = "pagination" id="pagination-submit">
 
@@ -95,8 +96,6 @@
         }
     }
 
-    print_init(dataSet);
-
     function print_me(arr) {
         var $tbody = document.querySelector("#code");
         $tbody.innerHTML = "";
@@ -117,6 +116,8 @@
             $tbody.rows[i].cells[6].innerText = arr[i].comments;
         };
     }
+
+    print_init(dataSet);
 
         d3.select("#find-dates").on("click", function(event) {
             d3.event.preventDefault();
