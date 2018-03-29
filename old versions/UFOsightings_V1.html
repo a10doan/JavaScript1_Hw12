@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>UFO Sightings</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+    <form id="ufo-form">
+        Begin Date: <input type="date" id="start-date">
+        End Date: <input type="date" id="end-date">
+        <!-- <button id="search-dates">Search Dates</button> -->
+        <input id="find-dates" type="submit" value="Find Sighting Dates">
+    </form>
+    <br>
+    <table style="width: 100%;" border="2" cellpadding="20">
+        <thead>
+            <div>
+                <td>Date/Time</td>
+                <td>City</td>
+                <td>State</td>
+                <td>Country</td>
+                <td>Shape</td>
+                <td>DurationMins</td>
+                <td>Comments</td>
+            </div>
+        </thead>
+        <tbody id="code">
+            
+        </tbody>
+    </table>
+
+    <script src="data.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"></script>
+    <!-- <script src="plots.js"></script> -->
+    <script type="text/javascript">
+
+    // Get references to the tbody element, input field and button
+        var $tbody = document.querySelector("#code");
+
+        // Start the table body with a blank HTML
+        $tbody.innerHTML = "";
+
+        console.log(dataSet.length);
+
+        for (var i = 0; i < (dataSet.length); i++) {
+            var $row = $tbody.insertRow(i);
+
+        for (var j = 0; j < 7; j++) {
+            var $cell = $row.insertCell(j);
+            //$cell.innerText = "Row " + (i + 1) + ", Cell " + (j + 1);
+            //$cell.innerText = dataSet[i].datetime;
+        };
+
+            // for (var k = 0; k < 6; k++) {
+            //     var $cell = $tbody.rows[i].cells[k];
+            //     $cell.innerText = "blah";
+            // };
+
+        //var k = 0;
+        //$tbody.rows[i].cells[k].innerText = dataSet[i].datetime;
+        $tbody.rows[i].cells[0].innerText = new Date (dataSet[i].datetime);
+        $tbody.rows[i].cells[1].innerText = dataSet[i].city;
+        $tbody.rows[i].cells[2].innerText = dataSet[i].state;
+        $tbody.rows[i].cells[3].innerText = dataSet[i].country;
+        $tbody.rows[i].cells[4].innerText = dataSet[i].shape;
+        $tbody.rows[i].cells[5].innerText = dataSet[i].durationMinutes;
+        $tbody.rows[i].cells[6].innerText = dataSet[i].comments;
+    }
+
+
+        d3.select("#find-dates").on("click", function(event) {
+            d3.event.preventDefault();
+            var end_date = d3.select('#end-date').property("value");
+            var start_date = d3.select('#start-date').property("value");
+
+            var update_list = [];
+
+            // console.log("**start date from button: **" + start_date);
+            // console.log("**end date from button: **" + end_date);
+            var end_datetime = d3.timeParse('%Y-%m-%d')(end_date);
+            var start_datetime = d3.timeParse('%Y-%m-%d')(start_date);
+            // console.log("**d3 startbutton conversion: **" + start_datetime);
+            // console.log("**d3 endbutton conversion: **" + end_datetime);
+            // console.log(dataSet[0].datetime);
+            // var testdate = d3.timeParse('%m/%d/%Y')(dataSet[0].datetime);
+            // console.log("**d3 conversion from dataSet.datetime: **" + testdate);
+
+            for (var i=0; i<100; i++) {
+                var start_timeindex = d3.timeParse('%m/%d/%Y')(dataSet[i].datetime);
+                if (start_timeindex.getTime() === start_datetime.getTime()) {
+                    console.log(start_timeindex);
+                    var start_index = i;
+                    break;
+                }
+            };
+
+            for (var j=0; j<100; j++) {
+                var end_timeindex = d3.timeParse('%m/%d/%Y')(dataSet[j].datetime);
+                if (end_timeindex.getTime() <= end_datetime.getTime()) {
+                    var end_index = j;
+                }
+            };
+            console.log("**end_index: **" + end_index);
+            console.log("**start_index: **" + start_index);
+            //var url = response.data[0].images.fixed_height.url; 
+            //d3.select(".imgGoesHere").append('img').attr("src", url);
+            
+            for (var k=start_index; k<=end_index; k++) {
+
+                update_list.push(dataSet[k]);
+
+            };
+
+            console.log(update_list[0].datetime);
+
+
+            //UPDATING PAGE, VIA $TBODY
+            var $tbody = document.querySelector("#code");
+
+            // Start the table body with a blank HTML
+            $tbody.innerHTML = "";
+
+
+            for (var i = 0; i < update_list.length; i++) {
+                var $row = $tbody.insertRow(i);
+
+            for (var j = 0; j < 7; j++) {
+                var $cell = $row.insertCell(j);
+                //$cell.innerText = "Row " + (i + 1) + ", Cell " + (j + 1);
+                //$cell.innerText = dataSet[i].datetime;
+            }
+            //console.log(update_list[i].datetime);
+            //var k = 0;
+            $tbody.rows[i].cells[0].innerHTML = update_list[i].datetime;
+            //$tbody.rows[i].cells[k].innerText = dataSet[i].datetime;
+            $tbody.rows[i].cells[1].innerText = update_list[i].city;
+            $tbody.rows[i].cells[2].innerText = update_list[i].state;
+            $tbody.rows[i].cells[3].innerText = update_list[i].country;
+            $tbody.rows[i].cells[4].innerText = update_list[i].shape;
+            $tbody.rows[i].cells[5].innerText = update_list[i].durationMinutes;
+            $tbody.rows[i].cells[6].innerText = update_list[i].comments;
+            };
+
+        })
+
+    </script>
+
+</body>
+
+</html>
